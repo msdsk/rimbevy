@@ -10,5 +10,6 @@ fn main() {
         .add_plugins(TerrainPlugin)
         .add_systems(Startup, spawn_camera)
         .add_systems(Update, move_camera)
+        .add_systems(Update, scale_camera)
         .run();
 }
