@@ -1,9 +1,8 @@
 use crate::constants::{ISOMETRY_RATIO, MAP_HEIGHT, MAP_WIDTH, TILE_SIZE, Z_LEVELS};
-use bevy::{prelude::*, utils::petgraph::data::Build};
+use bevy::{prelude::*};
 
 use noise::{
-    utils::{NoiseMap, NoiseMapBuilder, PlaneMapBuilder},
-    Exponent, Fbm, MultiFractal, NoiseFn, Perlin,
+    utils::{NoiseMap, NoiseMapBuilder, PlaneMapBuilder}, Fbm, MultiFractal, Perlin,
 };
 
 pub struct TerrainPlugin;
