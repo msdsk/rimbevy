@@ -1,7 +1,8 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, render::RenderPlugin};
 
 mod constants;
 mod setup;
+mod utils;
 use setup::*;
 
 fn main() {
