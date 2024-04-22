@@ -51,7 +51,7 @@ pub struct StoneBundle {
     layer: Layer,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 enum Direction {
     North,
     South,
@@ -64,7 +64,7 @@ impl Direction {
         [Self::North, Self::South, Self::East, Self::West].into_iter()
     }
 
-    pub fn to_ivec2(&self) -> IVec2 {
+    pub fn to_ivec2(self) -> IVec2 {
         match self {
             Self::North => IVec2::new(0, 1),
             Self::South => IVec2::new(0, -1),
@@ -83,28 +83,27 @@ fn get_stone_zlevel(
     }
 
     let mut level_edges = Vec::<[IVec2; 2]>::new();
-    println!("{:?}", level_edges);
 
     for position in query.iter() {
-        let (x, y, z) = position.0.into();
+        let [x, y, z] = position.0.to_array();
         if z != Z_LEVELS - 3 {
             continue;
         }
 
         for direction_name in Direction::into_iter() {
-            let (dx, dy) = Direction::to_ivec2(&direction_name).into();
+            let [dx, dy] = Direction::to_ivec2(direction_name).to_array();
             let (nx, ny) = (x + dx, y + dy);
-            if !(0..{ MAP_WIDTH }).contains(&nx) || !(0..{ MAP_HEIGHT }).contains(&ny) {
-                continue;
-            }
 
-            if stone_map.0[(z as usize, ny as usize, nx as usize)].is_none() {
+            if !(0..{ MAP_WIDTH }).contains(&nx)
+                || !(0..{ MAP_HEIGHT }).contains(&ny)
+                || stone_map.0[(z as usize, nx as usize, ny as usize)].is_none()
+            {
                 match direction_name {
-                    Direction::West => level_edges.push([IVec2::new(x, y), IVec2::new(x, y + 1)]),
                     Direction::East => {
                         level_edges.push([IVec2::new(x + 1, y), IVec2::new(x + 1, y + 1)])
                     }
-                    Direction::South => level_edges.push([IVec2::new(x, y), IVec2::new(x, y + 1)]),
+                    Direction::West => level_edges.push([IVec2::new(x, y), IVec2::new(x, y + 1)]),
+                    Direction::South => level_edges.push([IVec2::new(x, y), IVec2::new(x + 1, y)]),
                     Direction::North => {
                         level_edges.push([IVec2::new(x, y + 1), IVec2::new(x + 1, y + 1)])
                     }
@@ -121,7 +120,7 @@ fn set_stone_visibility(
     stone_map: Res<StoneMap>,
 ) {
     for (position, mut visibility) in query.iter_mut() {
-        let (x, y, z) = position.0.into();
+        let [x, y, z] = position.0.to_array();
 
         let stone_above = stone_map.0.get((z as usize + 1, x as usize, y as usize));
 

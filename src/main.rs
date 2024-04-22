@@ -1,4 +1,4 @@
-use bevy::{prelude::*, render::RenderPlugin};
+use bevy::prelude::*;
 
 mod constants;
 mod setup;
